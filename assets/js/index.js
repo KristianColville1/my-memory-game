@@ -49,7 +49,10 @@ const cardArray = [
     }
 ]
 
+
 const grid = document.querySelector('.grid');
+var cardsChosen = [];
+var cardsChosenId = [];
 
 // game board created
 function createBoard() {
@@ -63,16 +66,29 @@ function createBoard() {
 }
 
 // check for matches
+function checkForMatch(){
+    var cards = document.querySelectorAll('img');
+    const optionOneId = cardsChosenId[0];
+    const optionTwoId = cardsChosenId[1];
+    if(cardsChosen[0] === cardsChosen[1]){
+        alert('You found a match');
+        cards[optionOneId].setAttribute('src', 'assets/images/green.jpeg');
+        cards[optionTwoId].setAttribute('src', 'assets/images/green.jpeg');
+        grid.appendChild(card);
+    }
+}
 
 // flip your card
 function flipCard(){
-
+    var cardId = this.getAttribute('data-id');
+    cardsChosen.push(cardArray[cardId].name);
+    cardsChosenId.push(cardId);
+    this.setAttribute('src', cardArray[cardId].img);
+    if(cardsChosen.length === 2){
+        setTimeout(checkForMatch(), 500);
+    }
 }
 
-
 // update game
-
-
-
 
 createBoard();
