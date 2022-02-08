@@ -1,4 +1,13 @@
-document.addEventListener('DOMContentLoaded', () => {
+if( document.readyState !== 'loading' ) {
+    console.log( 'document is already ready, just execute code here' );
+    playGame();
+} else {
+    document.addEventListener('DOMContentLoaded', function () {
+        playGame();
+    });
+}
+
+function playGame() {
     const cardArray = [
         {
             name: 'apple',
@@ -53,10 +62,10 @@ document.addEventListener('DOMContentLoaded', () => {
     cardArray.sort(() => 0.5 - Math.random());
     
     const grid = document.querySelector('.grid');
-    const resultDisplay = document.querySelectorAll('img');
-    var cardsChosen = [];
-    var cardsChosenId = [];
-    var cardsWon = [];
+    const resultDisplay = document.querySelectorAll('#result');
+    let cardsChosen = [];
+    let cardsChosenId = [];
+    let cardsWon = [];
     
     
     // game board created
@@ -65,46 +74,59 @@ document.addEventListener('DOMContentLoaded', () => {
             var card = document.createElement('img');
             card.setAttribute('src', 'assets/images/red-white.jpeg');
             card.setAttribute('data-id', i);
-            card.addEventListener('click', flipCard());
+            card.addEventListener('click', flipCard);
             grid.appendChild(card);
         }
     }
     
     // check for matches
-    function checkForMatch(){
-        var cards = document.querySelectorAll('img');
+    function checkForMatch() {
+        const cards = document.querySelectorAll('img');
         const optionOneId = cardsChosenId[0];
         const optionTwoId = cardsChosenId[1];
-        if(cardsChosen[0] === cardsChosen[1]){
+        
+        if(optionOneId === optionTwoId) {
+            cards[optionOneId].setAttribute('src', 'assets/images/red-white.jpeg');
+            cards[optionTwoId].setAttribute('src', 'assets/images/red-white.jpeg');
+            alert('You have clicked the same image!');
+        }
+        else if (cardsChosen[0] === cardsChosen[1]) {
             alert('You found a match');
             cards[optionOneId].setAttribute('src', 'assets/images/green.jpeg');
             cards[optionTwoId].setAttribute('src', 'assets/images/green.jpeg');
+            cards[optionOneId].removeEventListener('click', flipCard);
+            cards[optionTwoId].removeEventListener('click', flipCard);
             cardsWon.push(cardsChosen);
-        } else{
+        } else {
             cards[optionOneId].setAttribute('src', 'assets/images/red-white.jpeg');
             cards[optionTwoId].setAttribute('src', 'assets/images/red-white.jpeg');
             alert('Sorry, try again');
         }
-    
         cardsChosen = [];
         cardsChosenId = [];
-    
-        if(cardsWon.length === cardArray.length/2){
-            resultDisplay.textContent = 'Congradulations! You found them all!';
+        resultDisplay.textContent = cardsWon.length;
+        if  (cardsWon.length === cardArray.length/2) {
+            resultDisplay.textContent = 'Congratulations! You found them all!';
         }
     }
-    
     // flip your card
     function flipCard(){
-        var cardId = this.getAttribute('data-id');
+        let cardId = this.getAttribute('data-id');
         cardsChosen.push(cardArray[cardId].name);
         cardsChosenId.push(cardId);
         this.setAttribute('src', cardArray[cardId].img);
         if(cardsChosen.length === 2){
-            setTimeout(checkForMatch(), 500);
+            setTimeout(checkForMatch, 500);
         }
     }
     
     // update game
     createBoard();
-}, 10)
+}
+
+
+
+
+    
+
+
